@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get started, simply copy the CSS, data, and images folder to your local machine. Create an `index.html` document at the root level on your machine. Once they're on your local system, you can see the results of your code by opening index.html in your browser. If you do this, remember that any changes you make won't appear on the page until you refresh your browser tab.
+To get started, simply copy the CSS, data, and images folder to your local machine.  Once they're on your local system, you can see the results of your code by opening index.html in your browser. If you do this, remember that any changes you make won't appear on the page until you refresh your browser tab.
 
 If you're using an editor like VSCode, you may want to install an extension for a live server. The [Live Server extension from Ritwick Dey](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) works well and also has live updates that will show any changes you make to your application without needing to refresh the page.
 
@@ -17,6 +17,8 @@ In this project, you'll create a JavaScript file that will take external data an
 Your JavaScript file will be in the `js` folder. Remember to add the script tag at the top of the HTML. 
 
 There are two files that hold the JSON data in the data folder: aboutMeData.json and projectsData.json. While you can technically simply paste the data into your JavaScript file and access it directly, this is an opportunity to get used to fetching external data from an API and using it in your applications. Remember that even though you're fetching data from a JSON source, you still need to run the response object through the `.json()` method in order to return an object you can access. I'd suggest fetching each file and then storing the data as a global variable you can use throughout the JavaScript file.
+
+**DO NOT EDIT ANY HTML, CSS, OR DATA FILES**
 
 ### - Start with the About Me section
 
