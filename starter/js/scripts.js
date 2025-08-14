@@ -165,6 +165,9 @@ function updateSpotlight(project) {
   spotlight.style.backgroundImage = `url(${spotlightImage})`;
   spotlight.style.backgroundSize = 'cover';
   spotlight.style.backgroundPosition = 'center';
+
+  // Clear existing content
+  spotlightTitles.replaceChildren();
 }
 
 // Initialize the page when DOM is loaded
