@@ -188,6 +188,9 @@ function updateSpotlight(project) {
   spotlightTitles.append(title, description, link);
 }
 
+// Form validation functionality
+function setupFormValidation() {}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
