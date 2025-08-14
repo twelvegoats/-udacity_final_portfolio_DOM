@@ -168,6 +168,10 @@ function updateSpotlight(project) {
 
   // Clear existing content
   spotlightTitles.replaceChildren();
+
+  // Create title
+  const title = document.createElement('h3');
+  title.textContent = project.project_name || 'Untitled Project';
 }
 
 // Initialize the page when DOM is loaded
