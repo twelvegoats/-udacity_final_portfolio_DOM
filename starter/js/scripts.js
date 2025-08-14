@@ -54,6 +54,11 @@ async function fetchProjects() {
     // Create project cards
     createProjectCards(data);
 
+    // Initialize spotlight with first project
+    if (data.length > 0) {
+      updateSpotlight(data[0]);
+    }
+
 }
 
 // Initialize the page when DOM is loaded
