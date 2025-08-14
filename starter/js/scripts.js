@@ -11,5 +11,9 @@ async function fetchAboutMe() {
         // Create paragraph element with bio text
         const paragraph = document.createElement('p');
         paragraph.textContent = data.about_me;
+
+        // Create headshot container div
+        const headshotContainer = document.createElement('div');
+        headshotContainer.className = 'headshotContainer';
     }
 }
