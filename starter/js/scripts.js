@@ -172,6 +172,11 @@ function updateSpotlight(project) {
   // Create title
   const title = document.createElement('h3');
   title.textContent = project.project_name || 'Untitled Project';
+
+  // Create description
+  const description = document.createElement('p');
+  description.textContent =
+    project.long_description || 'No detailed description available';
 }
 
 // Initialize the page when DOM is loaded
