@@ -51,6 +51,9 @@ async function fetchProjects() {
     const data = await response.json();
     console.log('Projects data loaded:', data);
 
+    // Create project cards
+    createProjectCards(data);
+
 }
 
 // Initialize the page when DOM is loaded
