@@ -157,6 +157,14 @@ function updateSpotlight(project) {
   // Target spotlight elements
   const spotlight = document.querySelector('#projectSpotlight');
   const spotlightTitles = document.querySelector('#spotlightTitles');
+
+  // Set background image with fallback
+  const spotlightImage = project.spotlight_image
+    ? project.spotlight_image.replace('../', './')
+    : './images/spotlight_placeholder_bg.webp';
+  spotlight.style.backgroundImage = `url(${spotlightImage})`;
+  spotlight.style.backgroundSize = 'cover';
+  spotlight.style.backgroundPosition = 'center';
 }
 
 // Initialize the page when DOM is loaded
