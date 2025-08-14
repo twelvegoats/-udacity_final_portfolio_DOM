@@ -201,6 +201,17 @@ function setupFormValidation() {
   // Regular expressions for validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const illegalCharsRegex = /[^a-zA-Z0-9@._-]/;
+
+  // Update character count
+  messageTextarea.addEventListener('input', function () {
+    const currentLength = this.value.length;
+    charactersLeft.textContent = `Characters: ${currentLength}/300`;
+
+    // Clear message error when user starts typing (if it was a length error)
+    if (currentLength <= 300) {
+      messageError.textContent = '';
+    }
+  });
 }
 
 // Initialize the page when DOM is loaded
