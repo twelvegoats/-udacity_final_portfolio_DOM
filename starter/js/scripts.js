@@ -26,7 +26,6 @@ async function fetchAboutMe() {
     // Fix the path from JSON file
     image.src = data.headshot.replace('../', './');
     image.alt = 'Profile headshot';
-    i;
 
     // Append image to container
     headshotContainer.appendChild(image);
@@ -41,8 +40,18 @@ async function fetchAboutMe() {
   }
 }
 
+// Fetch and populate Projects section
+async function fetchProjects() {
+  try {
+    
+}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
   fetchAboutMe();
+
+  // Update header name
+  const headerTitle = document.querySelector('header h1');
+  headerTitle.textContent = 'Sean Wildman';
 });
