@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
   fetchAboutMe();
   fetchProjects();
+  setupFormValidation();
 
   // Update header name
   const headerTitle = document.querySelector('header h1');
