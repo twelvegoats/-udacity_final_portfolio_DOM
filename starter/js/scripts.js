@@ -61,7 +61,9 @@ async function fetchProjects() {
 
     // Set up navigation arrows
     setupNavigationArrows();
-
+  } catch (error) {
+    console.error('Error loading projects data:', error);
+  }
 }
 
 // Initialize the page when DOM is loaded
