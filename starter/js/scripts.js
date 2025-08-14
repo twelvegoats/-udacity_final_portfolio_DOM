@@ -217,6 +217,58 @@ function setupFormValidation() {
       emailError.textContent = '';
     });
   });
+
+  // Form submission validation
+  form.addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent actual form submission
+
+    let isValid = true;
+
+    // Get current values
+    const emailValue = emailInput.value.trim();
+    const messageValue = messageTextarea.value.trim();
+
+    // Clear previous error messages
+    emailError.textContent = '';
+    messageError.textContent = '';
+
+    // Email validation
+    if (!emailValue) {
+      emailError.textContent = 'Email address is required.';
+      isValid = false;
+    } else if (!emailRegex.test(emailValue)) {
+      emailError.textContent =
+        'Please enter a valid email address (e.g., user@example.com).';
+      isValid = false;
+    } else if (illegalCharsRegex.test(emailValue)) {
+      emailError.textContent =
+        'Email contains invalid characters. Only letters, numbers, @, ., _, and - are allowed.';
+      isValid = false;
+    }
+
+    // Message validation
+    if (!messageValue) {
+      messageError.textContent = 'Message is required.';
+      isValid = false;
+    } else if (messageValue.length > 300) {
+      messageError.textContent = 'Message must be 300 characters or less.';
+      isValid = false;
+    } else if (illegalCharsRegex.test(messageValue)) {
+      messageError.textContent =
+        'Message contains invalid characters. Only letters, numbers, @, ., _, and - are allowed.';
+      isValid = false;
+    }
+
+    // If all validation passes
+    if (isValid) {
+      alert(
+        'Form validation passed! Your message has been submitted successfully.'
+      );
+      // Optionally reset the form
+      form.reset();
+      charactersLeft.textContent = 'Characters: 0/300';
+    }
+  });
 }
 
 // Initialize the page when DOM is loaded
