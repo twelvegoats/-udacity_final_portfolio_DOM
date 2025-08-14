@@ -23,9 +23,10 @@ async function fetchAboutMe() {
 
     // Create image element
     const image = document.createElement('img');
-    image.src = data.headshot;
+    // Fix the path from JSON file
+    image.src = data.headshot.replace('../', './');
     image.alt = 'Profile headshot';
-    console.log('Image src set to:', data.headshot);
+    i;
 
     // Append image to container
     headshotContainer.appendChild(image);
