@@ -183,6 +183,9 @@ function updateSpotlight(project) {
   link.href = project.url || '#';
   link.textContent = 'Click here to see more...';
   link.target = '_blank';
+
+  // Append elements to spotlight titles using append
+  spotlightTitles.append(title, description, link);
 }
 
 // Initialize the page when DOM is loaded
