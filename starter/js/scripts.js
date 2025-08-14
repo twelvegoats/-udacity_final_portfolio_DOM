@@ -7,5 +7,9 @@ async function fetchAboutMe() {
         const data = await response.json();
 
         const aboutMeDiv = document.querySelector('#aboutMe');
+
+        // Create paragraph element with bio text
+        const paragraph = document.createElement('p');
+        paragraph.textContent = data.about_me;
     }
 }
