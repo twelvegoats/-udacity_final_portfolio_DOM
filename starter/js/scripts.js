@@ -113,6 +113,9 @@ function setupNavigationArrows() {
   const leftArrow = document.querySelector('.arrow-left');
   const rightArrow = document.querySelector('.arrow-right');
   const projectList = document.querySelector('#projectList');
+
+  // Check if page is desktop or mobile
+  const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
 }
 
 // Initialize the page when DOM is loaded
