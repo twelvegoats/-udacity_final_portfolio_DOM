@@ -152,6 +152,9 @@ function setupNavigationArrows() {
   });
 }
 
+// Update spotlight section
+function updateSpotlight(project) {}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
