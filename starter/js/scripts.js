@@ -197,6 +197,10 @@ function setupFormValidation() {
   const emailError = document.querySelector('#emailError');
   const messageError = document.querySelector('#messageError');
   const charactersLeft = document.querySelector('#charactersLeft');
+
+  // Regular expressions for validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const illegalCharsRegex = /[^a-zA-Z0-9@._-]/;
 }
 
 // Initialize the page when DOM is loaded
