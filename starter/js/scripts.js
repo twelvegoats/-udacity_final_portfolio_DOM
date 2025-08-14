@@ -12,6 +12,9 @@ async function fetchAboutMe() {
     const aboutMeDiv = document.querySelector('#aboutMe');
     console.log('About me div found:', aboutMeDiv);
 
+    // Use DocumentFragment to batch DOM insertions
+    const fragment = document.createDocumentFragment();
+
     // Create paragraph element with bio text
     const paragraph = document.createElement('p');
     paragraph.textContent = data.aboutMe;
@@ -27,12 +30,12 @@ async function fetchAboutMe() {
     image.src = data.headshot.replace('../', './');
     image.alt = 'Profile headshot';
 
-    // Append image to container
-    headshotContainer.appendChild(image);
+    // Build structure in fragment (no redraws)
+    headshotContainer.append(image);
+    fragment.append(paragraph, headshotContainer);
 
-    // Append both elements to aboutMe div
-    aboutMeDiv.appendChild(paragraph);
-    aboutMeDiv.appendChild(headshotContainer);
+    // Single DOM insertion - only one redraw
+    aboutMeDiv.append(fragment);
 
     console.log('Elements appended successfully');
   } catch (error) {
@@ -70,6 +73,9 @@ async function fetchProjects() {
 // Create project cards
 function createProjectCards(projects) {
   const projectList = document.querySelector('#projectList');
+  
+  // Create fragment to batch all card insertions
+  const fragment = document.createDocumentFragment();
 
   projects.forEach((project) => {
     // Create project card div
@@ -81,9 +87,13 @@ function createProjectCards(projects) {
     const cardImage = project.card_image
       ? project.card_image.replace('../', './')
       : './images/card_placeholder_bg.webp';
-    projectCard.style.backgroundImage = `url(${cardImage})`;
-    projectCard.style.backgroundSize = 'cover';
-    projectCard.style.backgroundPosition = 'center';
+    
+    // Batch all styles at once
+    projectCard.style.cssText = `
+      background-image: url(${cardImage});
+      background-size: cover;
+      background-position: center;
+    `;
 
     // Create title element
     const title = document.createElement('h4');
@@ -94,7 +104,7 @@ function createProjectCards(projects) {
     description.textContent =
       project.short_description || 'No description available';
 
-    // Append elements to card
+    // Build card structure in memory
     projectCard.append(title, description);
 
     // Add click listener to update spotlight
@@ -102,9 +112,12 @@ function createProjectCards(projects) {
       updateSpotlight(project);
     });
 
-    // Append card to project list
-    projectList.append(projectCard);
+    // Add to fragment instead of DOM
+    fragment.append(projectCard);
   });
+
+  // Single DOM insertion for all cards - only one redraw
+  projectList.append(fragment);
 }
 
 // Setup navigation arrows
@@ -162,12 +175,16 @@ function updateSpotlight(project) {
   const spotlightImage = project.spotlight_image
     ? project.spotlight_image.replace('../', './')
     : './images/spotlight_placeholder_bg.webp';
-  spotlight.style.backgroundImage = `url(${spotlightImage})`;
-  spotlight.style.backgroundSize = 'cover';
-  spotlight.style.backgroundPosition = 'center';
+  
+  // Batch background styles
+  spotlight.style.cssText += `
+    background-image: url(${spotlightImage});
+    background-size: cover;
+    background-position: center;
+  `;
 
-  // Clear existing content
-  spotlightTitles.replaceChildren();
+  // Use fragment to batch content creation
+  const fragment = document.createDocumentFragment();
 
   // Create title
   const title = document.createElement('h3');
@@ -184,8 +201,12 @@ function updateSpotlight(project) {
   link.textContent = 'Click here to see more...';
   link.target = '_blank';
 
-  // Append elements to spotlight titles using append
-  spotlightTitles.append(title, description, link);
+  // Build structure in fragment
+  fragment.append(title, description, link);
+
+  // Clear and replace content in one operation
+  spotlightTitles.replaceChildren();
+  spotlightTitles.append(fragment);
 }
 
 // Form validation functionality
@@ -271,12 +292,291 @@ function setupFormValidation() {
   });
 }
 
+// Function to enhance navbar styling with JavaScript - Optimized for minimal redraws
+function enhanceNavbarStyling() {
+  const nav = document.querySelector('nav');
+  const navUl = document.querySelector('nav ul');
+  const navLinks = document.querySelectorAll('nav a');
+  const navItems = document.querySelectorAll('nav li');
+
+  // Hide elements during styling to prevent redraws
+  nav.style.visibility = 'hidden';
+
+  // Batch all nav container styles
+  nav.style.cssText = `
+    padding: 0 30px 0 0;
+    margin: 0 20px 0 0;
+    width: 30%;
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    visibility: hidden;
+  `;
+
+  // Batch all ul styles
+  navUl.style.cssText = `
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: .9rem;
+    font-weight: 500;
+    gap: 15px;
+    width: 100%;
+    margin: 0;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  `;
+
+  // Batch link styles
+  navLinks.forEach(link => {
+    link.style.cssText = `
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    `;
+  });
+
+  // Use DocumentFragment to batch DOM manipulations
+  navItems.forEach((item, index) => {
+    // Batch all item styles
+    item.style.cssText = `
+      transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 8px;
+      position: relative;
+      color: var(--onLightBG);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(-20px);
+    `;
+
+    // Create elements without triggering reflows
+    const underline = document.createElement('div');
+    underline.style.cssText = `
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #007bff, #00d4ff);
+      transition: width 0.3s ease;
+      pointer-events: none;
+    `;
+
+    const glowBorder = document.createElement('div');
+    glowBorder.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, transparent, rgba(0, 123, 255, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: -1;
+    `;
+
+    // Batch DOM insertions using append
+    item.append(underline, glowBorder);
+
+    // Add event listeners (these don't cause redraws)
+    item.addEventListener('mouseenter', () => {
+      item.style.cssText += `
+        transform: translateY(-3px) scale(1.05);
+        background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 123, 255, 0.05));
+        color: #007bff;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+      `;
+      underline.style.width = '100%';
+      glowBorder.style.opacity = '1';
+    });
+
+    item.addEventListener('mouseleave', () => {
+      item.style.cssText = item.style.cssText.replace(/transform:.*?;|background:.*?;|color:.*?;|box-shadow:.*?;/g, '') + `
+        transform: translateY(0) scale(1);
+        background: transparent;
+        color: var(--onLightBG);
+        box-shadow: none;
+      `;
+      underline.style.width = '0';
+      glowBorder.style.opacity = '0';
+    });
+  });
+
+  // Use requestAnimationFrame to batch the final visibility change and animations
+  requestAnimationFrame(() => {
+    nav.style.visibility = 'visible';
+    
+    // Stagger animations using a single RAF callback
+    navItems.forEach((item, index) => {
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateX(0)';
+        });
+      }, index * 150);
+    });
+  });
+}
+
+// Alternative styling functions for different looks
+function applyGlassMorphismNav() {
+  const navUl = document.querySelector('nav ul');
+  Object.assign(navUl.style, {
+    background: 'rgba(255, 255, 255, 0.25)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.18)',
+    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+  });
+}
+
+function applyNeonNav() {
+  const navUl = document.querySelector('nav ul');
+  const navItems = document.querySelectorAll('nav li');
+  
+  Object.assign(navUl.style, {
+    background: 'rgba(0, 0, 0, 0.8)',
+    border: '1px solid #00d4ff',
+    boxShadow: '0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.1)'
+  });
+
+  navItems.forEach(item => {
+    Object.assign(item.style, {
+      color: '#00d4ff',
+      textShadow: '0 0 10px rgba(0, 212, 255, 0.5)'
+    });
+
+    item.addEventListener('mouseenter', () => {
+      Object.assign(item.style, {
+        color: '#ffffff',
+        textShadow: '0 0 20px rgba(0, 212, 255, 0.8)',
+        boxShadow: '0 0 15px rgba(0, 212, 255, 0.4)'
+      });
+    });
+
+    item.addEventListener('mouseleave', () => {
+      Object.assign(item.style, {
+        color: '#00d4ff',
+        textShadow: '0 0 10px rgba(0, 212, 255, 0.5)',
+        boxShadow: 'none'
+      });
+    });
+  });
+}
+
+function applyGradientNav() {
+  const navUl = document.querySelector('nav ul');
+  const navItems = document.querySelectorAll('nav li');
+  
+  Object.assign(navUl.style, {
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    border: 'none'
+  });
+
+  navItems.forEach(item => {
+    item.style.color = 'rgba(255, 255, 255, 0.9)';
+
+    item.addEventListener('mouseenter', () => {
+      Object.assign(item.style, {
+        background: 'rgba(255, 255, 255, 0.2)',
+        color: 'white',
+        transform: 'translateX(-5px) scale(1.05)'
+      });
+    });
+
+    item.addEventListener('mouseleave', () => {
+      Object.assign(item.style, {
+        background: 'transparent',
+        color: 'rgba(255, 255, 255, 0.9)',
+        transform: 'translateX(0) scale(1)'
+      });
+    });
+  });
+}
+
+function applyFloatingCardsNav() {
+  const navUl = document.querySelector('nav ul');
+  const navItems = document.querySelectorAll('nav li');
+  
+  Object.assign(navUl.style, {
+    background: 'transparent',
+    border: 'none',
+    boxShadow: 'none',
+    gap: '20px'
+  });
+
+  navItems.forEach(item => {
+    Object.assign(item.style, {
+      background: 'white',
+      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+      borderRadius: '12px',
+      padding: '12px 20px'
+    });
+
+    item.addEventListener('mouseenter', () => {
+      Object.assign(item.style, {
+        transform: 'translateY(-5px) scale(1.05)',
+        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+        background: 'linear-gradient(135deg, #007bff, #00d4ff)',
+        color: 'white'
+      });
+    });
+
+    item.addEventListener('mouseleave', () => {
+      Object.assign(item.style, {
+        transform: 'translateY(0) scale(1)',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+        background: 'white',
+        color: 'var(--onLightBG)'
+      });
+    });
+  });
+}
+
+// Function to switch between different navbar styles
+function switchNavbarStyle(styleName) {
+  // First apply base styling
+  enhanceNavbarStyling();
+  
+  // Then apply specific style
+  switch(styleName) {
+    case 'glass':
+      applyGlassMorphismNav();
+      break;
+    case 'neon':
+      applyNeonNav();
+      break;
+    case 'gradient':
+      applyGradientNav();
+      break;
+    case 'floating':
+      applyFloatingCardsNav();
+      break;
+    default:
+      // Default enhanced styling is already applied
+      break;
+  }
+}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
   fetchAboutMe();
   fetchProjects();
   setupFormValidation();
+  enhanceNavbarStyling(); // Call the navbar styling function
 
   // Update header name
   const headerTitle = document.querySelector('header h1');
