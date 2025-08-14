@@ -107,6 +107,9 @@ function createProjectCards(projects) {
   });
 }
 
+// Setup navigation arrows
+function setupNavigationArrows() {}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
