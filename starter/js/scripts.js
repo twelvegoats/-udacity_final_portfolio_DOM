@@ -58,6 +58,7 @@ async function fetchProjects() {
     if (data.length > 0) {
       updateSpotlight(data[0]);
     }
+    const projectList = document.querySelector('#projectList');
 
     // Set up navigation arrows
     setupNavigationArrows();
@@ -67,12 +68,50 @@ async function fetchProjects() {
 }
 
 // Create project cards
-function createProjectCards(projects) {}
+function createProjectCards(projects) {
+  const projectList = document.querySelector('#projectList');
+
+  projects.forEach((project) => {
+    // Create project card div
+    const projectCard = document.createElement('div');
+    projectCard.className = 'projectCard';
+    projectCard.id = project.project_id;
+
+    // Set background image with fallback
+    const cardImage = project.card_image
+      ? project.card_image.replace('../', './')
+      : './images/card_placeholder_bg.webp';
+    projectCard.style.backgroundImage = `url(${cardImage})`;
+    projectCard.style.backgroundSize = 'cover';
+    projectCard.style.backgroundPosition = 'center';
+
+    // Create title element
+    const title = document.createElement('h4');
+    title.textContent = project.project_name || 'Untitled Project';
+
+    // Create description element
+    const description = document.createElement('p');
+    description.textContent =
+      project.short_description || 'No description available';
+
+    // Append elements to card
+    projectCard.append(title, description);
+
+    // Add click listener to update spotlight
+    projectCard.addEventListener('pointerdown', () => {
+      updateSpotlight(project);
+    });
+
+    // Append card to project list
+    projectList.append(projectCard);
+  });
+}
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
   fetchAboutMe();
+  fetchProjects();
 
   // Update header name
   const headerTitle = document.querySelector('header h1');
