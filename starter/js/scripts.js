@@ -2,7 +2,7 @@
 async function fetchAboutMe() {
   try {
     // Fetch the about me data from JSON file
-    const response = await fetch('../data/about-me.json');
+    const response = await fetch('../data/aboutMeData.json');
     // Parse the JSON response into a JavaScript object
     const data = await response.json();
 
@@ -10,7 +10,7 @@ async function fetchAboutMe() {
 
     // Create paragraph element with bio text
     const paragraph = document.createElement('p');
-    paragraph.textContent = data.about_me;
+    paragraph.textContent = data.aboutMe;
 
     // Create headshot container div
     const headshotContainer = document.createElement('div');
