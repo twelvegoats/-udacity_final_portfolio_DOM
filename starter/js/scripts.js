@@ -5,5 +5,7 @@ async function fetchAboutMe() {
         const response = await fetch('../data/about-me.json');
         // Parse the JSON response into a JavaScript object
         const data = await response.json();
+
+        const aboutMeDiv = document.querySelector('#aboutMe');
     }
 }
