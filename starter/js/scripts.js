@@ -189,7 +189,15 @@ function updateSpotlight(project) {
 }
 
 // Form validation functionality
-function setupFormValidation() {}
+function setupFormValidation() {
+  // Add variables to target elements
+  const form = document.querySelector('#formSection');
+  const emailInput = document.querySelector('#contactEmail');
+  const messageTextarea = document.querySelector('#contactMessage');
+  const emailError = document.querySelector('#emailError');
+  const messageError = document.querySelector('#messageError');
+  const charactersLeft = document.querySelector('#charactersLeft');
+}
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
