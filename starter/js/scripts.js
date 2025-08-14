@@ -59,6 +59,9 @@ async function fetchProjects() {
       updateSpotlight(data[0]);
     }
 
+    // Set up navigation arrows
+    setupNavigationArrows();
+
 }
 
 // Initialize the page when DOM is loaded
