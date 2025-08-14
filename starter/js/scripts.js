@@ -177,6 +177,12 @@ function updateSpotlight(project) {
   const description = document.createElement('p');
   description.textContent =
     project.long_description || 'No detailed description available';
+
+  // Create link
+  const link = document.createElement('a');
+  link.href = project.url || '#';
+  link.textContent = 'Click here to see more...';
+  link.target = '_blank';
 }
 
 // Initialize the page when DOM is loaded
