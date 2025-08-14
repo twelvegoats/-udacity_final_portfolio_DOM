@@ -153,7 +153,11 @@ function setupNavigationArrows() {
 }
 
 // Update spotlight section
-function updateSpotlight(project) {}
+function updateSpotlight(project) {
+  // Target spotlight elements
+  const spotlight = document.querySelector('#projectSpotlight');
+  const spotlightTitles = document.querySelector('#spotlightTitles');
+}
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
