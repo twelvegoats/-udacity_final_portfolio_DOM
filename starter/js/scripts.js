@@ -15,5 +15,10 @@ async function fetchAboutMe() {
         // Create headshot container div
         const headshotContainer = document.createElement('div');
         headshotContainer.className = 'headshotContainer';
+
+         // Create image element
+        const image = document.createElement('img');
+        image.src = data.headshot;
+        image.alt = 'Profile headshot';
     }
 }
