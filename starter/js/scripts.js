@@ -108,7 +108,12 @@ function createProjectCards(projects) {
 }
 
 // Setup navigation arrows
-function setupNavigationArrows() {}
+function setupNavigationArrows() {
+  // Target needed elements
+  const leftArrow = document.querySelector('.arrow-left');
+  const rightArrow = document.querySelector('.arrow-right');
+  const projectList = document.querySelector('#projectList');
+}
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
