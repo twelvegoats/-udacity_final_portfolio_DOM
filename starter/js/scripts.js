@@ -66,6 +66,9 @@ async function fetchProjects() {
   }
 }
 
+// Create project cards
+function createProjectCards(projects) {}
+
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
