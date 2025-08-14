@@ -211,6 +211,11 @@ function setupFormValidation() {
     if (currentLength <= 300) {
       messageError.textContent = '';
     }
+
+    // Clear email error when user starts typing
+    emailInput.addEventListener('input', function () {
+      emailError.textContent = '';
+    });
   });
 }
 
