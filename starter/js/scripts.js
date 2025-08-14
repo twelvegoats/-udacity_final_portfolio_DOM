@@ -133,6 +133,23 @@ function setupNavigationArrows() {
       });
     }
   });
+
+  // Right arrow scroll behavior
+  rightArrow.addEventListener('pointerdown', () => {
+    if (isDesktop()) {
+      // Scroll down on desktop
+      projectList.scrollBy({
+        top: 220, // Card height + margin
+        behavior: 'smooth',
+      });
+    } else {
+      // Scroll right on mobile
+      projectList.scrollBy({
+        left: 220, // Card width + margin
+        behavior: 'smooth',
+      });
+    }
+  });
 }
 
 // Initialize the page when DOM is loaded
