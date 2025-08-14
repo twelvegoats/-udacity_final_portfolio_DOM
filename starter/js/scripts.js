@@ -31,3 +31,8 @@ async function fetchAboutMe() {
     console.error('Error loading about me data:', error);
   }
 }
+
+// Initialize the page when DOM is loaded
+document.addEventListener('DOMContentLoaded', function () {
+  fetchAboutMe();
+});
