@@ -43,7 +43,10 @@ async function fetchAboutMe() {
 // Fetch and populate Projects section
 async function fetchProjects() {
   try {
-    
+    // Fetch the projects data from JSON file
+    const response = await fetch('./data/projectsData.json');
+    console.log('Projects response status:', response.status);
+
 }
 
 // Initialize the page when DOM is loaded
