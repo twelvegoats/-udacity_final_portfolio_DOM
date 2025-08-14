@@ -47,6 +47,10 @@ async function fetchProjects() {
     const response = await fetch('./data/projectsData.json');
     console.log('Projects response status:', response.status);
 
+    // Parse the JSON response into a JavaScript object
+    const data = await response.json();
+    console.log('Projects data loaded:', data);
+
 }
 
 // Initialize the page when DOM is loaded
