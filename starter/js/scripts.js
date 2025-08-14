@@ -20,5 +20,12 @@ async function fetchAboutMe() {
         const image = document.createElement('img');
         image.src = data.headshot;
         image.alt = 'Profile headshot';
+
+        // Append image to container
+        headshotContainer.appendChild(image);
+        
+        // Append both elements to aboutMe div
+        aboutMeDiv.appendChild(paragraph);
+        aboutMeDiv.appendChild(headshotContainer);
     }
 }
