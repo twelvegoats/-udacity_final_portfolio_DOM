@@ -2,9 +2,9 @@
 async function fetchAboutMe() {
   try {
     // Fetch the about me data from JSON file
-    const response = await fetch('../data/aboutMeData.json');
+    const response = await fetch('./data/aboutMeData.json');
     console.log('Response status:', response.status);
-    
+
     // Parse the JSON response into a JavaScript object
     const data = await response.json();
     console.log('Data loaded:', data);
@@ -33,7 +33,7 @@ async function fetchAboutMe() {
     // Append both elements to aboutMe div
     aboutMeDiv.appendChild(paragraph);
     aboutMeDiv.appendChild(headshotContainer);
-    
+
     console.log('Elements appended successfully');
   } catch (error) {
     console.error('Error loading about me data:', error);
