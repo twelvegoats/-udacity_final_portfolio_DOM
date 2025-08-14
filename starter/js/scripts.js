@@ -116,6 +116,23 @@ function setupNavigationArrows() {
 
   // Check if page is desktop or mobile
   const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+
+  // Left arrow scroll behavior
+  leftArrow.addEventListener('pointerdown', () => {
+    if (isDesktop()) {
+      // Scroll up on desktop
+      projectList.scrollBy({
+        top: -220, // Card height + margin
+        behavior: 'smooth',
+      });
+    } else {
+      // Scroll left on mobile
+      projectList.scrollBy({
+        left: -220, // Card width + margin
+        behavior: 'smooth',
+      });
+    }
+  });
 }
 
 // Initialize the page when DOM is loaded
