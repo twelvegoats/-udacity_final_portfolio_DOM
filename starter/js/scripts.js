@@ -3,14 +3,11 @@ async function fetchAboutMe() {
   try {
     // Fetch the about me data from JSON file
     const response = await fetch('./data/aboutMeData.json');
-    console.log('Response status:', response.status);
 
     // Parse the JSON response into a JavaScript object
     const data = await response.json();
-    console.log('Data loaded:', data);
 
     const aboutMeDiv = document.querySelector('#aboutMe');
-    console.log('About me div found:', aboutMeDiv);
 
     // Use DocumentFragment to batch DOM insertions
     const fragment = document.createDocumentFragment();
@@ -18,7 +15,6 @@ async function fetchAboutMe() {
     // Create paragraph element with bio text
     const paragraph = document.createElement('p');
     paragraph.textContent = data.aboutMe;
-    console.log('Paragraph created with text:', data.aboutMe);
 
     // Create headshot container div
     const headshotContainer = document.createElement('div');
@@ -30,40 +26,47 @@ async function fetchAboutMe() {
     image.src = data.headshot.replace('../', './');
     image.alt = 'Profile headshot';
 
-    // Build structure in fragment (no redraws)
+    // Build structure in fragment
     headshotContainer.append(image);
     fragment.append(paragraph, headshotContainer);
-
-    // Single DOM insertion - only one redraw
     aboutMeDiv.append(fragment);
-
-    console.log('Elements appended successfully');
   } catch (error) {
     console.error('Error loading about me data:', error);
   }
 }
 
-// Fetch and populate Projects section
 async function fetchProjects() {
   try {
     // Fetch the projects data from JSON file
     const response = await fetch('./data/projectsData.json');
-    console.log('Projects response status:', response.status);
 
     // Parse the JSON response into a JavaScript object
     const data = await response.json();
-    console.log('Projects data loaded:', data);
+
+    // Validate that data is an array
+    if (!Array.isArray(data)) {
+      throw new Error('Projects data is not an array');
+    }
 
     // Create project cards
-    createProjectCards(data);
+    const createdCards = createProjectCards(data);
 
-    // Initialize spotlight with first project
-    if (data.length > 0) {
-      updateSpotlight(data[0]);
+    // Initialize spotlight with first valid project using find()
+    const firstProject = data.find(
+      (project) => project && project.project_name
+    );
+    if (firstProject) {
+      updateSpotlight(firstProject);
+
+      // Set first card as active
+      const firstCard = createdCards.find(
+        (card) => card.id === firstProject.project_id
+      );
+      if (firstCard) {
+        firstCard.classList.add('active');
+      }
     }
-    const projectList = document.querySelector('#projectList');
 
-    // Set up navigation arrows
     setupNavigationArrows();
   } catch (error) {
     console.error('Error loading projects data:', error);
@@ -73,51 +76,73 @@ async function fetchProjects() {
 // Create project cards
 function createProjectCards(projects) {
   const projectList = document.querySelector('#projectList');
-  
+
   // Create fragment to batch all card insertions
   const fragment = document.createDocumentFragment();
 
-  projects.forEach((project) => {
-    // Create project card div
-    const projectCard = document.createElement('div');
-    projectCard.className = 'projectCard';
-    projectCard.id = project.project_id;
+  const projectCards = projects
+    .filter((project) => project && project.project_name) // Filter out invalid projects
+    .map((project, index) => {
+      // Create project card div
+      const projectCard = document.createElement('div');
+      projectCard.className = 'projectCard';
+      projectCard.id = project.project_id || `project-${index}`;
 
-    // Set background image with fallback
-    const cardImage = project.card_image
-      ? project.card_image.replace('../', './')
-      : './images/card_placeholder_bg.webp';
-    
-    // Batch all styles at once
-    projectCard.style.cssText = `
-      background-image: url(${cardImage});
-      background-size: cover;
-      background-position: center;
-    `;
+      // Set background image with fallback using ternary operator
+      const cardImage = project.card_image
+        ? project.card_image.replace('../', './')
+        : './images/card_placeholder_bg.webp';
 
-    // Create title element
-    const title = document.createElement('h4');
-    title.textContent = project.project_name || 'Untitled Project';
+      // Batch all styles at once
+      projectCard.style.cssText = `
+        background-image: url(${cardImage});
+        background-size: cover;
+        background-position: center;
+      `;
 
-    // Create description element
-    const description = document.createElement('p');
-    description.textContent =
-      project.short_description || 'No description available';
+      // Create and configure child elements
+      const elements = [
+        {
+          tag: 'h4',
+          content: project.project_name || 'Untitled Project',
+          className: 'project-title',
+        },
+        {
+          tag: 'p',
+          content: project.short_description || 'No description available',
+          className: 'project-description',
+        },
+      ].map(({ tag, content, className }) => {
+        const element = document.createElement(tag);
+        element.textContent = content;
+        if (className) element.className = className;
+        return element;
+      });
 
-    // Build card structure in memory
-    projectCard.append(title, description);
+      // Build card structure using spread operator
+      projectCard.append(...elements);
 
-    // Add click listener to update spotlight
-    projectCard.addEventListener('pointerdown', () => {
-      updateSpotlight(project);
+      // Add pointerdown listener to update spotlight
+      projectCard.addEventListener('pointerdown', () => {
+        updateSpotlight(project);
+
+        // Add active state to clicked card and remove from others
+        document.querySelectorAll('.projectCard').forEach((card) => {
+          card.classList.remove('active');
+        });
+        projectCard.classList.add('active');
+      });
+
+      return projectCard;
     });
 
-    // Add to fragment instead of DOM
-    fragment.append(projectCard);
-  });
+  // Use forEach to append all cards to fragment
+  projectCards.forEach((card) => fragment.append(card));
 
-  // Single DOM insertion for all cards - only one redraw
+  // Single DOM insertion for all cards
   projectList.append(fragment);
+
+  return projectCards;
 }
 
 // Setup navigation arrows
@@ -175,7 +200,7 @@ function updateSpotlight(project) {
   const spotlightImage = project.spotlight_image
     ? project.spotlight_image.replace('../', './')
     : './images/spotlight_placeholder_bg.webp';
-  
+
   // Batch background styles
   spotlight.style.cssText += `
     background-image: url(${spotlightImage});
@@ -334,7 +359,7 @@ function enhanceNavbarStyling() {
   `;
 
   // Batch link styles
-  navLinks.forEach(link => {
+  navLinks.forEach((link) => {
     link.style.cssText = `
       text-decoration: none;
       position: relative;
@@ -404,7 +429,12 @@ function enhanceNavbarStyling() {
     });
 
     item.addEventListener('mouseleave', () => {
-      item.style.cssText = item.style.cssText.replace(/transform:.*?;|background:.*?;|color:.*?;|box-shadow:.*?;/g, '') + `
+      item.style.cssText =
+        item.style.cssText.replace(
+          /transform:.*?;|background:.*?;|color:.*?;|box-shadow:.*?;/g,
+          ''
+        ) +
+        `
         transform: translateY(0) scale(1);
         background: transparent;
         color: var(--onLightBG);
@@ -418,7 +448,7 @@ function enhanceNavbarStyling() {
   // Use requestAnimationFrame to batch the final visibility change and animations
   requestAnimationFrame(() => {
     nav.style.visibility = 'visible';
-    
+
     // Stagger animations using a single RAF callback
     navItems.forEach((item, index) => {
       setTimeout(() => {
@@ -438,31 +468,32 @@ function applyGlassMorphismNav() {
     background: 'rgba(255, 255, 255, 0.25)',
     backdropFilter: 'blur(20px)',
     border: '1px solid rgba(255, 255, 255, 0.18)',
-    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
   });
 }
 
 function applyNeonNav() {
   const navUl = document.querySelector('nav ul');
   const navItems = document.querySelectorAll('nav li');
-  
+
   Object.assign(navUl.style, {
     background: 'rgba(0, 0, 0, 0.8)',
     border: '1px solid #00d4ff',
-    boxShadow: '0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.1)'
+    boxShadow:
+      '0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.1)',
   });
 
-  navItems.forEach(item => {
+  navItems.forEach((item) => {
     Object.assign(item.style, {
       color: '#00d4ff',
-      textShadow: '0 0 10px rgba(0, 212, 255, 0.5)'
+      textShadow: '0 0 10px rgba(0, 212, 255, 0.5)',
     });
 
     item.addEventListener('mouseenter', () => {
       Object.assign(item.style, {
         color: '#ffffff',
         textShadow: '0 0 20px rgba(0, 212, 255, 0.8)',
-        boxShadow: '0 0 15px rgba(0, 212, 255, 0.4)'
+        boxShadow: '0 0 15px rgba(0, 212, 255, 0.4)',
       });
     });
 
@@ -470,7 +501,7 @@ function applyNeonNav() {
       Object.assign(item.style, {
         color: '#00d4ff',
         textShadow: '0 0 10px rgba(0, 212, 255, 0.5)',
-        boxShadow: 'none'
+        boxShadow: 'none',
       });
     });
   });
@@ -479,20 +510,20 @@ function applyNeonNav() {
 function applyGradientNav() {
   const navUl = document.querySelector('nav ul');
   const navItems = document.querySelectorAll('nav li');
-  
+
   Object.assign(navUl.style, {
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    border: 'none'
+    border: 'none',
   });
 
-  navItems.forEach(item => {
+  navItems.forEach((item) => {
     item.style.color = 'rgba(255, 255, 255, 0.9)';
 
     item.addEventListener('mouseenter', () => {
       Object.assign(item.style, {
         background: 'rgba(255, 255, 255, 0.2)',
         color: 'white',
-        transform: 'translateX(-5px) scale(1.05)'
+        transform: 'translateX(-5px) scale(1.05)',
       });
     });
 
@@ -500,7 +531,7 @@ function applyGradientNav() {
       Object.assign(item.style, {
         background: 'transparent',
         color: 'rgba(255, 255, 255, 0.9)',
-        transform: 'translateX(0) scale(1)'
+        transform: 'translateX(0) scale(1)',
       });
     });
   });
@@ -509,20 +540,20 @@ function applyGradientNav() {
 function applyFloatingCardsNav() {
   const navUl = document.querySelector('nav ul');
   const navItems = document.querySelectorAll('nav li');
-  
+
   Object.assign(navUl.style, {
     background: 'transparent',
     border: 'none',
     boxShadow: 'none',
-    gap: '20px'
+    gap: '20px',
   });
 
-  navItems.forEach(item => {
+  navItems.forEach((item) => {
     Object.assign(item.style, {
       background: 'white',
       boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
       borderRadius: '12px',
-      padding: '12px 20px'
+      padding: '12px 20px',
     });
 
     item.addEventListener('mouseenter', () => {
@@ -530,7 +561,7 @@ function applyFloatingCardsNav() {
         transform: 'translateY(-5px) scale(1.05)',
         boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
         background: 'linear-gradient(135deg, #007bff, #00d4ff)',
-        color: 'white'
+        color: 'white',
       });
     });
 
@@ -539,7 +570,7 @@ function applyFloatingCardsNav() {
         transform: 'translateY(0) scale(1)',
         boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
         background: 'white',
-        color: 'var(--onLightBG)'
+        color: 'var(--onLightBG)',
       });
     });
   });
@@ -549,9 +580,9 @@ function applyFloatingCardsNav() {
 function switchNavbarStyle(styleName) {
   // First apply base styling
   enhanceNavbarStyling();
-  
+
   // Then apply specific style
-  switch(styleName) {
+  switch (styleName) {
     case 'glass':
       applyGlassMorphismNav();
       break;
@@ -576,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchAboutMe();
   fetchProjects();
   setupFormValidation();
-  enhanceNavbarStyling(); // Call the navbar styling function
+  enhanceNavbarStyling();
 
   // Update header name
   const headerTitle = document.querySelector('header h1');
