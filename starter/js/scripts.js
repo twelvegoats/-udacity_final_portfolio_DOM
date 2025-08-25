@@ -297,7 +297,12 @@ function setupFormValidation() {
     } else if (messageValue.length > 300) {
       messageError.textContent = 'Message must be 300 characters or less.';
       isValid = false;
+    } else if (illegalCharsRegex.test(messageValue)) {
+      messageError.textContent =
+        'Message contains invalid characters. Only letters, numbers, @, ., _, and - are allowed.';
+      isValid = false;
     }
+
     // If all validation passes
     if (isValid) {
       alert(
