@@ -311,7 +311,6 @@ function setupFormValidation() {
 }
 // Initialize the page when DOM is loaded
 
-console.log('DOM loaded, calling fetchAboutMe');
 fetchAboutMe();
 fetchProjects();
 setupFormValidation();
