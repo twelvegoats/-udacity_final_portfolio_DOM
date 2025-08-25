@@ -314,7 +314,6 @@ function setupFormValidation() {
     }
   });
 }
-// Initialize the page when DOM is loaded
 
 fetchAboutMe();
 fetchProjects();
