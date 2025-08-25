@@ -308,7 +308,6 @@ function setupFormValidation() {
       alert(
         'Form validation passed! Your message has been submitted successfully.'
       );
-      // Optionally reset the form
       form.reset();
       charactersLeft.textContent = 'Characters: 0/300';
     }
