@@ -314,31 +314,12 @@ function setupFormValidation() {
     }
   });
 }
-
-// Function to enhance navbar styling with JavaScript - Optimized for minimal redraws
-
-// Use requestAnimationFrame to batch the final visibility change and animations
-requestAnimationFrame(() => {
-  nav.style.visibility = 'visible';
-
-  // Stagger animations using a single RAF callback
-  navItems.forEach((item, index) => {
-    setTimeout(() => {
-      requestAnimationFrame(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateX(0)';
-      });
-    }, index * 150);
-  });
-});
-
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM loaded, calling fetchAboutMe');
   fetchAboutMe();
   fetchProjects();
   setupFormValidation();
-  enhanceNavbarStyling();
 
   // Update header name
   const headerTitle = document.querySelector('header h1');
