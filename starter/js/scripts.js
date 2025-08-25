@@ -245,7 +245,7 @@ function setupFormValidation() {
   const charactersLeft = document.querySelector('#charactersLeft');
 
   // Regular expressions for validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+$/;
   const illegalCharsRegex = /[^a-zA-Z0-9@._-]/;
 
   // Update character count
@@ -253,15 +253,13 @@ function setupFormValidation() {
     const currentLength = this.value.length;
     charactersLeft.textContent = `Characters: ${currentLength}/300`;
 
-    // Clear message error when user starts typing (if it was a length error)
-    if (currentLength <= 300) {
-      messageError.textContent = '';
-    }
+    // Clear message error when user starts typing
+    messageError.textContent = '';
+  });
 
-    // Clear email error when user starts typing
-    emailInput.addEventListener('input', function () {
-      emailError.textContent = '';
-    });
+  // Clear email error when user starts typing
+  emailInput.addEventListener('input', function () {
+    emailError.textContent = '';
   });
 
   // Form submission validation
@@ -282,13 +280,13 @@ function setupFormValidation() {
     if (!emailValue) {
       emailError.textContent = 'Email address is required.';
       isValid = false;
-    } else if (!emailRegex.test(emailValue)) {
-      emailError.textContent =
-        'Please enter a valid email address (e.g., user@example.com).';
-      isValid = false;
     } else if (illegalCharsRegex.test(emailValue)) {
       emailError.textContent =
         'Email contains invalid characters. Only letters, numbers, @, ., _, and - are allowed.';
+      isValid = false;
+    } else if (!emailRegex.test(emailValue)) {
+      emailError.textContent =
+        'Please enter a valid email address (e.g., user@example.com).';
       isValid = false;
     }
 
@@ -358,7 +356,7 @@ function enhanceNavbarStyling() {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   `;
 
-  // Batch link styles
+  // Batch all link styles
   navLinks.forEach((link) => {
     link.style.cssText = `
       text-decoration: none;
