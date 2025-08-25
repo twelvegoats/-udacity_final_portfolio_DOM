@@ -245,7 +245,7 @@ function setupFormValidation() {
   const charactersLeft = document.querySelector('#charactersLeft');
 
   // Regular expressions for validation
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const illegalCharsRegex = /[^a-zA-Z0-9@._-]/;
 
   // Update character count
